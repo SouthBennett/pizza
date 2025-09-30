@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: darkred;
+}
+
+main {
+  background-color: white;
+  width: 70%;
+  margin: 0 auto 1rem auto;
+  padding: 0 1rem 2rem 1rem;
+}
+
+header {
+  background-color: lightgray;
+  padding: 2rem 1rem;
+}
+
+header img {
+  float: right;
+  max-width: 200px;
+}
+
+header h1 {
+  color: yellow;
+  font-weight: 600;
+  font-size: 3.5rem;
+}
+
+#contact-button {
+  border: none;
+  background-color: yellow;
+  color: white;
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#tagline {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+fieldset {
+  border: 1px solid yellow;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+legend {
+  color: yellow;
+  font-variant: small-caps;
+  font-size: 1.5rem;
+  padding-left: 1rem;
+  width: 100%;
+}
