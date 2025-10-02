@@ -38,6 +38,52 @@
           <label for="email">Email:</label>
           <input type="text" id="email" name="email" />
         </fieldset>
+
+        <fieldset>
+          <legend>Select Pickup or Delivery</legend>
+          <label for="pickup">
+            <input
+              type="radio"
+              id="pickup"
+              name="method"
+              value="pickup"
+            />Pickup
+          </label>
+          <label for="delivery">
+            <input
+              type="radio"
+              id="delivery"
+              name="method"
+              value="delivery"
+            />Delivery
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Select Toppings</legend>
+          <label for="pepperoni">
+            <input type="checkbox" id="pepperoni" name="toppings[]" />
+            Pepperoni
+          </label>  
+            <label for="pineapple">
+              <input type="checkbox" id="pineapple" name="toppings[]" />
+              Pineapple
+            </label>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Pizza Size</legend>
+          <select id="size" name="size">
+            <option value="none">-- Select a Size --</option>
+            <option value="small">-- Small --</option>
+            <option value="medium">-- Medium --</option>
+            <option value="large">-- Large --</option>
+          </select>
+        </fieldset>
+
+        <!-- Add an Order Button -->
+        <button type="submit">Place Order</button>
       </form>
     </main>
   </body>
