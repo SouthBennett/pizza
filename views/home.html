@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Saiyan Slice</title>
 
+    <!-- Link to javascript -->
+     <Script src="js/pizza.js" defer></Script>
+
     <!-- Favicon -->
     <link rel="icon" href="images/pizza-icon.png" />
 
@@ -24,17 +27,20 @@
           facere iste voluptate ipsa repellendus enim officiis. Veniam maxime
           vel consequuntur!
         </p>
-        <a id="contact-button" href="#" role="button">Contact Us</a>
+        <a id="contact-button" href="/contact-us" role="button">Contact Us</a>
       </header>
 
-      <form id="pizza-form" action="#" method="get">
+      <form id="pizza-form" action="submit-order" method="post">
         <!-- Contact Info -->
         <fieldset>
           <legend>Contact Info</legend>
+          <span id="err-fname" class="error">FName cannot be empty!</span>
           <label for="fname">First Name:</label>
           <input type="text" id="fname" name="fname" />
+          <span id="err-lname" class="error">LName cannot be empty!</span>
           <label for="lname">LastName:</label>
           <input type="text" id="lname" name="lname" />
+          <span id="err-email" class="error">email cannot be empty!</span>
           <label for="email">Email:</label>
           <input type="text" id="email" name="email" />
         </fieldset>
