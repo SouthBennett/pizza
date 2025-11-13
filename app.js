@@ -4,6 +4,9 @@ import express from "express";
 //Create an instance of an Express application
 const app = express();
 
+// Set ejs as our view engine
+app.set('view engine', 'ejs');
+
 // Enable static file serving
 app.use(express.static("public"));
 
@@ -19,31 +22,35 @@ const PORT = 3000;
 //Define a default "route" ('/')
 //req: contains information about the incoming request
 //res: allows us to send back a response to the client
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   //Send " Hello, world!" as a response to the client
   //res.send('<h1>Welcome to Poppa\'s Pizza!');
-  res.sendFile(`${import.meta.dirname}/views/home.html`);
+  // res.sendFile(`${import.meta.dirname}/views/home.html`);
+  res.render('home');
 });
 
 //Define a contact-us route
 app.get("/contact-us", (req, res) => {
-  res.sendFile(`${import.meta.dirname}/views/contact.html`);
+  // res.sendFile(`${import.meta.dirname}/views/contact.html`);
+  res.render('contact');
 });
 
 //define confirmation route
 app.get("/confirm", (req, res) => {
-  res.sendFile(`${import.meta.dirname}/views/confirmation.html`);
+  // res.sendFile(`${import.meta.dirname}/views/confirmation.html`);
+  res.render('confirmation');
 });
 
 //define an admin route
-app.get("/adminpage", (req, res) => {
-  res.send(orders);
+app.get("/admin", (req, res) => {
+  //res.send(orders);
   //res.sendFile(`${import.meta.dirname}/views/admin.html`);
+  res.render('admin' , { orders });
 });
 
 //define a "submit-order" form
 app.post("/submit-order", (req, res) => {
-  res.sendFile(`${import.meta.dirname}/views/confirmation.html`);
+  
 
   //console.log(req.body);
 
@@ -56,12 +63,19 @@ app.post("/submit-order", (req, res) => {
     toppings: req.body.toppings,
     size: req.body.size,
     comment: req.body.comment,
+    timestamp: new Date()
   };
+
+  res.render('confirmation', { order });
+
+  
+
 
   //Add order to array
   orders.push(order);
   console.log(order);
 });
+
 
 //Start the server and make it listen on the port
 //specified above
