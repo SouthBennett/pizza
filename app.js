@@ -35,7 +35,7 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 
 //Create an array to store orders
-const orders = [];
+//const orders = [];
 
 //Define the port number where our serve will listen
 const PORT = 3000;
@@ -81,39 +81,112 @@ app.get("/confirm", (req, res) => {
   res.render('confirmation');
 });
 
-//define an admin route
-app.get("/admin", (req, res) => {
+//define an admin route 
+app.get("/admin", async(req, res) => {
   //res.send(orders);
   //res.sendFile(`${import.meta.dirname}/views/admin.html`);
-  res.render('admin' , { orders });
+  try {
+    // Fetch all orderws from the database, newest first
+    const [orders] = await pool.query('SELECT * FROM orders ORDER BY timestamp DESC');
+    
+    //Optional: Format timestamps for better display
+    orders.forEach(order => {
+      order.formattedTimestamp = new Date(order.timestamp).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    });
+    // Render the admin page with the orders
+    res.render('admin' , { orders: orders });
+
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).send('Database error: ' + err.message);
+  }
+
 });
 
 //define a "submit-order" form
-app.post("/submit-order", (req, res) => {
+app.post("/submit-order", async (req, res) => {
   
+  //Wrap everything in a try/catch to handle potential database errors
+  try {
+
+    // Get the order data from the form submission
+
+    //req.body contains all the form fields 
+    const order = req.body;
+
+    // Convert the toppings aray into a comma-seperated string
+    // HTML checkboxes submit as an array, but MYSQL stores as TEXT
+    order.toppings = Array.isArray(order.toppings) ? order.toppings.join(", ") : "";
+
+    // Add a timestamp to track when this order was placed
+    order.timestamp = new Date();
+
+    // Log the order to the server console (helpful for debugging)
+    console.log('New order recieved:', order);
+    
+    // Define an SQL INSER query
+    // The ? are PLACEHOLDERS that will be replaced with actual values
+    // This prevents SQL injection (a common security vulnerability)
+
+    const sql =`INSERT INTO orders (fname, lname, email, size, method, toppings, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    
+    // Create an array of parameters for each ? placeholder in order
+    const params = [
+      order.fname,
+      order.lname,
+      order.email,
+      order.size,
+      order.method,
+      order.toppings,
+      order.timestamp
+    ];
+
+    // Executethe query with the parameters
+    const [result] = await pool.execute(sql, params);
+
+    // optional: you can access the newly inserted row's ID
+    console.log('Order inserted with ID:', result.insertId);
+
+    // Pass the order data to the confirmation page
+    res.render('confirmation', { order: order });
+
+  } catch (err) {
+    // if ANYTHING goes wrong, this runs
+    console.error('Error inserting order:', err);
+
+    // Check if it's a duplicate email error
+    if (err.code === 'ER_DUP_ENTRY') {
+      res.status(409).send('An order with this email already exists.');
+    } else {
+      // Generic error message for other issues
+      res.status(500).send('Sorry there was an error processing your order. Please try again.');
+    }
+  }
 
   //console.log(req.body);
 
   //Create a json
-  const order = {
-    fname: req.body.fname,
-    lname: req.body.lname,
-    email: req.body.email,
-    method: req.body.method,
-    toppings: req.body.toppings,
-    size: req.body.size,
-    comment: req.body.comment,
-    timestamp: new Date()
-  };
-
-  res.render('confirmation', { order });
-
-  
-
+  // const order = {
+  //   fname: req.body.fname,
+  //   lname: req.body.lname,
+  //   email: req.body.email,
+  //   method: req.body.method,
+  //   toppings: req.body.toppings,
+  //   size: req.body.size,
+  //   comment: req.body.comment,
+  //   timestamp: new Date()
+  // };
 
   //Add order to array
-  orders.push(order);
-  console.log(order);
+  //orders.push(order);
+  //console.log(order);
 });
 
 
