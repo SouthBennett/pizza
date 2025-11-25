@@ -6,6 +6,9 @@ import mysql2 from 'mysql2';
 
 import dotenv from 'dotenv';
 
+import { validateForm } from "./validation.js";
+
+
 // Load environment variables from .env file
 // This must be called before accessing process.env
 dotenv.config();
@@ -66,7 +69,7 @@ app.get('/', (req, res) => {
   //Send " Hello, world!" as a response to the client
   //res.send('<h1>Welcome to Poppa\'s Pizza!');
   // res.sendFile(`${import.meta.dirname}/views/home.html`);
-  res.render('home');
+  res.render('home', { errors: [] });
 });
 
 //Define a contact-us route
@@ -121,6 +124,13 @@ app.post("/submit-order", async (req, res) => {
     //req.body contains all the form fields 
     const order = req.body;
 
+    // Server-side validation
+    const valid = validateForm(order);
+    if(!valid.isValid) {
+      //res.send(valid.errors);
+      res.render('home', {errors: valid.errors});
+    }
+
     // Convert the toppings aray into a comma-seperated string
     // HTML checkboxes submit as an array, but MYSQL stores as TEXT
     order.toppings = Array.isArray(order.toppings) ? order.toppings.join(", ") : "";
@@ -148,7 +158,7 @@ app.post("/submit-order", async (req, res) => {
       order.timestamp
     ];
 
-    // Executethe query with the parameters
+    // Execute the query with the parameters
     const [result] = await pool.execute(sql, params);
 
     // optional: you can access the newly inserted row's ID

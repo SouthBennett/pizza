@@ -29,7 +29,13 @@
         </p>
         <a id="contact-button" href="/contact-us" role="button">Contact Us</a>
       </header>
-
+      <% if (errors) { %>
+          <ul>
+            <% errors.forEach(error => { %>
+                <li><%= error %></li>
+            <% }); %>
+          </ul>
+      <% } %>  
       <form id="pizza-form" action="submit-order" method="post">
         <!-- Contact Info -->
         <fieldset>
